@@ -8,6 +8,7 @@ export default function TodoApp({ userId, setStage }) {
   const [editingId, setEditingId] = useState(null);
   const [editTask, setEditTask] = useState('');
   const [error, setError] = useState('');
+  const [btnback,setBtnBack] = useState({allTask:true,active:false,pending:false})
 
   const fetchTodos = async () => {
     try {
@@ -43,6 +44,8 @@ export default function TodoApp({ userId, setStage }) {
     try {
       let arr = [...todos];
       setDisplayTodos([...arr]);
+      setBtnBack({ allTask: true, active: false, pending: false });
+
     } catch {
       setError('Failed to add todo');
     }
@@ -52,6 +55,8 @@ export default function TodoApp({ userId, setStage }) {
       let arr = [...todos];
       arr = arr.filter((item) => item.completed === true);
       setDisplayTodos([...arr]);
+      setBtnBack({ allTask: false, active: true, pending: false });
+
     } catch {
       setError('Failed to add todo');
     }
@@ -61,6 +66,8 @@ export default function TodoApp({ userId, setStage }) {
       let arr = [...todos];
       arr = arr.filter((item) => item.completed === false);
       setDisplayTodos([...arr]);
+      setBtnBack({ allTask: false, active: false, pending: true });
+
     } catch {
       setError('Failed to add todo');
     }
@@ -138,19 +145,19 @@ export default function TodoApp({ userId, setStage }) {
       <div className='flex mb-6 space-x-4 justify-center'>
           <button
           onClick={allTodos}
-          className="px-6 py-3 bg-indigo-300 text-white font-bold rounded-md hover:bg-indigo-600 transition"
+          className={`px-6 py-3 ${btnback.allTask ? "bg-indigo-600" : "bg-indigo-400"}  text-white font-bold rounded-md hover:bg-indigo-600 transition`}
         >
           All todos
         </button>
         <button
           onClick={completedTodos}
-          className="px-6 py-3 bg-indigo-300 text-white font-bold rounded-md hover:bg-indigo-600 transition"
+          className={`px-6 py-3 ${btnback.active ? "bg-indigo-600" : "bg-indigo-400"} text-white font-bold rounded-md hover:bg-indigo-600 transition`}
         >
           Completed
         </button>
         <button
           onClick={pendingTodos}
-          className="px-6 py-3 bg-indigo-300 text-white font-bold rounded-md hover:bg-indigo-600 transition"
+          className={`px-6 py-3 ${btnback.pending ? "bg-indigo-600" : "bg-indigo-400"} text-white font-bold rounded-md hover:bg-indigo-600 transition`}
         >
           Pending
         </button>
