@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import api from '../api';
 
 export default function Login({ setStage, setUserId }) {
   const [userId, setUserIdLocal] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  
 
   const login = async () => {
     try {

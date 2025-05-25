@@ -4,6 +4,7 @@ import api from '../api';
 export default function TodoApp({ userId, setStage }) {
   const [task, setTask] = useState('');
   const [todos, setTodos] = useState([]);
+  const [displayTodos,setDisplayTodos] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editTask, setEditTask] = useState('');
   const [error, setError] = useState('');
@@ -12,6 +13,7 @@ export default function TodoApp({ userId, setStage }) {
     try {
       const res = await api.get(`/todos/${userId}`);
       setTodos(res.data);
+      setDisplayTodos(res.data);
       setError('');
     } catch {
       setError('Failed to fetch todos');
@@ -29,8 +31,36 @@ export default function TodoApp({ userId, setStage }) {
     try {
       const res = await api.post('/todos', { userId, task });
       setTodos([...todos, res.data]);
+      setDisplayTodos([...todos, res.data]);
       setTask('');
       setError('');
+    } catch {
+      setError('Failed to add todo');
+    }
+  };
+
+  const allTodos = async () => {
+    try {
+      let arr = [...todos];
+      setDisplayTodos([...arr]);
+    } catch {
+      setError('Failed to add todo');
+    }
+  };
+  const completedTodos = async () => {
+    try {
+      let arr = [...todos];
+      arr = arr.filter((item) => item.completed === true);
+      setDisplayTodos([...arr]);
+    } catch {
+      setError('Failed to add todo');
+    }
+  };
+  const pendingTodos = async () => {
+    try {
+      let arr = [...todos];
+      arr = arr.filter((item) => item.completed === false);
+      setDisplayTodos([...arr]);
     } catch {
       setError('Failed to add todo');
     }
@@ -40,6 +70,7 @@ export default function TodoApp({ userId, setStage }) {
     try {
       const res = await api.put(`/todos/toggle/${id}`);
       setTodos(todos.map((todo) => (todo._id === id ? res.data : todo)));
+      setDisplayTodos(todos.map((todo) => (todo._id === id ? res.data : todo)));
       setError('');
     } catch {
       setError('Failed to toggle todo');
@@ -50,6 +81,7 @@ export default function TodoApp({ userId, setStage }) {
     try {
       await api.delete(`/todos/${id}`);
       setTodos(todos.filter((todo) => todo._id !== id));
+      setDisplayTodos(todos.filter((todo) => todo._id !== id));
       setError('');
     } catch {
       setError('Failed to remove todo');
@@ -103,11 +135,31 @@ export default function TodoApp({ userId, setStage }) {
           Add
         </button>
       </div>
+      <div className='flex mb-6 space-x-4 justify-center'>
+          <button
+          onClick={allTodos}
+          className="px-6 py-3 bg-indigo-300 text-white font-bold rounded-md hover:bg-indigo-600 transition"
+        >
+          All todos
+        </button>
+        <button
+          onClick={completedTodos}
+          className="px-6 py-3 bg-indigo-300 text-white font-bold rounded-md hover:bg-indigo-600 transition"
+        >
+          Completed
+        </button>
+        <button
+          onClick={pendingTodos}
+          className="px-6 py-3 bg-indigo-300 text-white font-bold rounded-md hover:bg-indigo-600 transition"
+        >
+          Pending
+        </button>
+      </div>
 
       {error && <p className="text-red-600 mb-4">{error}</p>}
 
       <ul className="space-y-3 mb-8">
-        {todos.map(({ _id, task, completed }) => (
+        {displayTodos.map(({ _id, task, completed }) => (
           <li
             key={_id}
             className="flex items-center space-x-4 bg-gray-50 p-3 rounded-md shadow-sm"
