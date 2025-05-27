@@ -5,6 +5,7 @@ This is a Full Stack Todo Application built with the MERN stack (MongoDB, Expres
 ## Features
 
 - User Signup & Login
+- Adding Tasks, Editing Tasks, Deleting Tasks
 - Create, Read, Update, Delete (CRUD) Todos
 - React + Tailwind CSS
 - Vite-powered frontend
